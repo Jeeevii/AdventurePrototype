@@ -8,6 +8,7 @@ class Bedroom extends AdventureScene {
         let note = this.add.text(this.w * 0.3, this.w * 0.3, "📝 NoteBook")
         .setFontSize(this.s * 2)
         .setInteractive()
+        //.playAnimation()
         .on('pointerover', () => this.showMessage("I think there was a knife at the attic somewhere hmmm.."))
         .on('pointerdown', () => {
             this.showMessage("No need to bring a NoteBook!");
