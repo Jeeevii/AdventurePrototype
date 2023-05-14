@@ -289,7 +289,7 @@ class Good extends Phaser.Scene {
     create() {
         this.add.text(50, 50, "Good Ending!!! You defended yourself against the monster").setFontSize(50);
         this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
-        this.input.on('pointerdown', () => this.scene.start('intro'));
+        this.input.on('pointerdown', () => this.scene.start('start'));
     }
 }
 class Bad extends Phaser.Scene {
@@ -299,7 +299,7 @@ class Bad extends Phaser.Scene {
     create() {
         this.add.text(50, 50, "Bad Ending... You Died").setFontSize(50);
         this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
-        this.input.on('pointerdown', () => this.scene.start('intro'));
+        this.input.on('pointerdown', () => this.scene.start('start'));
     }
 }
 
