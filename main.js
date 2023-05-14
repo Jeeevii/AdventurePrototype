@@ -5,6 +5,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Intro, Bedroom, Hallway, Attic, Downstair, Frontdoor, Kitchen, GD, BG],
+    scene: [Start, Intro, Intro2, Bedroom, Hallway, Attic, Downstair, Frontdoor, Kitchen, Good, Bad],
     title: "Adventure Game - Jeevithan M",
 });
