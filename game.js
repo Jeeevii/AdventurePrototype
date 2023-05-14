@@ -193,7 +193,7 @@ class Frontdoor extends AdventureScene {
             });
         });
 
-        
+
         this.add.text(this.w * 0.3, this.w * 0.4, "go back")
         .setFontSize(this.s * 2)
         .setInteractive()
@@ -218,8 +218,9 @@ class Kitchen extends AdventureScene {
             this.showMessage("Let's go back?");
         })
         .on('pointerdown', () => {
-            this.gotoScene('Downstair');
+            this.gotoScene('DownStair');
         });
+
         this.add.text(this.w * 0.5, this.w * 0.1, "bloody cabinet")
         .setFontSize(this.s * 2)
         .setInteractive()
