@@ -1,10 +1,17 @@
-const game = new Phaser.Game({
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 1920,
-        height: 1080
+const config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    parent: 'phaser-example',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
     },
-    scene: [Start, Intro, Intro2, Bedroom, Hallway, Attic, Downstair, Frontdoor, Kitchen, Good, Bad],
+    scene: Example,
     title: "Adventure Game - Jeevithan M",
-});
+};
+
+const game = new Phaser.Game(config);
