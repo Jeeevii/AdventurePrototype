@@ -10,7 +10,7 @@ const config = {
             debug: false
         }
     },
-    scene: JumperScene,
+    scene: [JumperScene],
     title: "Adventure Game - Jeevithan M",
 };
 

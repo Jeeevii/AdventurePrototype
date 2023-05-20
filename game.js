@@ -2,7 +2,6 @@ class JumperScene extends Phaser.Scene {
     player;
     platforms;
     door;
-    movingBox;
     cursors;
 
     preload() {
@@ -15,18 +14,16 @@ class JumperScene extends Phaser.Scene {
         this.add.image(400, 300, 'sky');
 
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 568, 'platform').setScale(0.5).refreshBody();
-        this.platforms.create(300, 400, 'platform').setScale(0.3).refreshBody();
-        this.platforms.create(500, 350, 'platform').setScale(0.3).refreshBody();
-        this.platforms.create(200, 250, 'platform').setScale(0.3).refreshBody();
-        this.platforms.create(600, 200, 'platform').setScale(0.3).refreshBody();
-        this.platforms.create(400, 100, 'platform').setScale(0.4).refreshBody();
+        this.platforms.create(655, 560, 'platform').setScale(0.5).refreshBody();
+        this.platforms.create(450, 475, 'platform').setScale(0.4).refreshBody();
+        this.platforms.create(250, 385, 'platform').setScale(0.4).refreshBody();
+        this.platforms.create(450, 291, 'platform').setScale(0.4).refreshBody();
+        this.platforms.create(650, 200, 'platform').setScale(0.4).refreshBody();
+        this.door = this.add.rectangle(700, 162, 45, 65, 0x00ff00); // door
+        this.ground = this.add.rectangle(400, 590, 800, 15, "0xff0000"); 
 
-        this.movingBox = this.physics.add.image(200, 200, 'platform').setScale(0.2);
-        this.movingBox.setImmovable(true);
-
-        this.player = this.physics.add.sprite(100, 450, 'dude');
-        this.player.setBounce(0.2);
+        this.player = this.physics.add.sprite(655, 450, 'dude');
+        this.player.setBounce(0.1);
         this.player.setCollideWorldBounds(true);
 
         this.anims.create({
@@ -56,49 +53,36 @@ class JumperScene extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 800, 600);
         this.physics.world.setBounds(0, 0, 800, 600);
         this.cameras.main.startFollow(this.player, true);
-
-        this.door = this.add.rectangle(750, 70, 50, 70, 0x00ff00);
         this.physics.add.overlap(this.player, this.door, this.changeLevel, null, this);
     }
 
     update() {
         const { left, right, up } = this.cursors;
-    
+
         if (left.isDown) {
-            this.player.setVelocityX(-160);
+            this.player.setVelocityX(-150);
             this.player.anims.play('left', true);
         }
         else if (right.isDown) {
-            this.player.setVelocityX(160);
+            this.player.setVelocityX(150);
             this.player.anims.play('right', true);
         }
         else {
             this.player.setVelocityX(0);
             this.player.anims.play('turn');
         }
-    
-        if (up.isDown) {
-            this.player.setVelocityY(-330);
+
+        if (up.isDown && this.player.body.touching.down) {
+            this.player.setVelocityY(-235);
         }
-    
-        if (this.player.y > 600) {
-            this.resetScene();
+
+        if (this.player.y > 570) {
+            this.player.setPosition(655, 450); // Reset the player's position
         }
-    
-        this.moveBox();
     }
-    
 
     handleCollision(player, platform) {
-        if (platform === this.movingBox) {
-            this.movingBox.setVelocityX(player.body.velocity.x);
-        }
-    }
-
-    moveBox() {
-        if (this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
-            this.movingBox.setVelocityY(-100);
-        }
+        // Handle any collision logic if needed
     }
 
     changeLevel() {
