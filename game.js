@@ -1,4 +1,4 @@
-class JumperScene extends Phaser.Scene {
+class Level1 extends Phaser.Scene {
     player;
     platforms;
     door;
