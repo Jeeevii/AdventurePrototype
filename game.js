@@ -8,23 +8,32 @@ class JumperScene extends Phaser.Scene {
         this.load.image('sky', 'img/sky.png');
         this.load.image('platform', 'img/platform.png');
         this.load.spritesheet('dude', 'img/dude.png', { frameWidth: 32, frameHeight: 48 });
+        this.load.image('heart', 'img/star.png');    
     }
 
     create() {
         this.add.image(400, 300, 'sky');
-
+        this.hearts = [];
+        this.health = 3;
+        
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(655, 560, 'platform').setScale(0.5).refreshBody();
         this.platforms.create(450, 475, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(250, 385, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(450, 291, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(650, 200, 'platform').setScale(0.4).refreshBody();
+        
         this.door = this.add.rectangle(700, 162, 45, 65, 0x00ff00); // door
         this.ground = this.add.rectangle(400, 590, 800, 15, "0xff0000"); 
-
+        
         this.player = this.physics.add.sprite(655, 450, 'dude');
         this.player.setBounce(0.1);
         this.player.setCollideWorldBounds(true);
+
+        for (let i = 0; i < this.health; i++) {
+            const heart = this.add.sprite(30 + i * 40, 30, 'heart').setScale(0.5);
+            this.hearts.push(heart);
+        }
 
         this.anims.create({
             key: 'left',
@@ -77,21 +86,34 @@ class JumperScene extends Phaser.Scene {
         }
 
         if (this.player.y > 570) {
-            this.player.setPosition(655, 450); // Reset the player's position
+            this.player.setPosition(655, 450);
+            this.health -= 1;
+            for (let i = 0; i < this.hearts.length; i++) {
+                if (i < this.health) {
+                    this.hearts[i].setVisible(true); 
+                } else {
+                    this.hearts[i].setVisible(false); 
+                }
+            }
+        }
+        /*
+        if (this.player.x == this.door.x && this.player.y == this.door.y){
+            this.scene.restart('JumperScene');
+        }
+        */
+        if (this.physics.overlap(this.player, this.door)) {
+            console.log('Player and door are overlapping!');
+            this.scene.restart('JumperScene');
+        }
+        if (this.health <= 0) {
+            this.scene.restart('JumperScene');
         }
     }
 
     handleCollision(player, platform) {
-        // Handle any collision logic if needed
     }
 
     changeLevel() {
-        // Reset any state or timers if needed
-        this.scene.start('NextLevelScene');
-    }
-
-    resetScene() {
-        // Reset any state or timers if needed
-        this.scene.restart();
+        this.scene.restart('JumperScene');
     }
 }
