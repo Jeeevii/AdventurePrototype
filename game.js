@@ -1,39 +1,31 @@
-class Example extends Phaser.Scene
-{
-    movingPlatform;
-    cursors;
-    platforms;
-    stars;
+class JumperScene extends Phaser.Scene {
     player;
+    platforms;
+    door;
+    movingBox;
+    cursors;
 
-    preload ()
-    {
+    preload() {
         this.load.image('sky', 'img/sky.png');
-        this.load.image('ground', 'img/platform.png');
-        this.load.image('star', 'img/star.png');
+        this.load.image('platform', 'img/platform.png');
         this.load.spritesheet('dude', 'img/dude.png', { frameWidth: 32, frameHeight: 48 });
     }
 
-    create ()
-    {
+    create() {
         this.add.image(400, 300, 'sky');
 
         this.platforms = this.physics.add.staticGroup();
+        this.platforms.create(400, 568, 'platform').setScale(0.5).refreshBody();
+        this.platforms.create(300, 400, 'platform').setScale(0.3).refreshBody();
+        this.platforms.create(500, 350, 'platform').setScale(0.3).refreshBody();
+        this.platforms.create(200, 250, 'platform').setScale(0.3).refreshBody();
+        this.platforms.create(600, 200, 'platform').setScale(0.3).refreshBody();
+        this.platforms.create(400, 100, 'platform').setScale(0.4).refreshBody();
 
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-        // platforms.create(600, 400, 'ground');
-        // platforms.create(50, 250, 'ground');
-        // platforms.create(750, 220, 'ground');
-
-        this.movingPlatform = this.physics.add.image(400, 400, 'ground');
-
-        this.movingPlatform.setImmovable(true);
-        this.movingPlatform.body.allowGravity = false;
-        this.movingPlatform.setVelocityX(50);
+        this.movingBox = this.physics.add.image(200, 200, 'platform').setScale(0.2);
+        this.movingBox.setImmovable(true);
 
         this.player = this.physics.add.sprite(100, 450, 'dude');
-
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
 
@@ -46,7 +38,7 @@ class Example extends Phaser.Scene
 
         this.anims.create({
             key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
+            frames: [{ key: 'dude', frame: 4 }],
             frameRate: 20
         });
 
@@ -59,65 +51,63 @@ class Example extends Phaser.Scene
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.stars = this.physics.add.group({
-            key: 'star',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
-        });
+        this.physics.add.collider(this.player, this.platforms, this.handleCollision, null, this);
 
-        for (const star of this.stars.getChildren())
-        {
-            star.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        }
+        this.cameras.main.setBounds(0, 0, 800, 600);
+        this.physics.world.setBounds(0, 0, 800, 600);
+        this.cameras.main.startFollow(this.player, true);
 
-        this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.collider(this.player, this.movingPlatform);
-        this.physics.add.collider(this.stars, this.platforms);
-        this.physics.add.collider(this.stars, this.movingPlatform);
-
-        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+        this.door = this.add.rectangle(750, 70, 50, 70, 0x00ff00);
+        this.physics.add.overlap(this.player, this.door, this.changeLevel, null, this);
     }
 
-    update ()
-    {
+    update() {
         const { left, right, up } = this.cursors;
-
-        if (left.isDown)
-        {
+    
+        if (left.isDown) {
             this.player.setVelocityX(-160);
-
             this.player.anims.play('left', true);
         }
-        else if (right.isDown)
-        {
+        else if (right.isDown) {
             this.player.setVelocityX(160);
-
             this.player.anims.play('right', true);
         }
-        else
-        {
+        else {
             this.player.setVelocityX(0);
-
             this.player.anims.play('turn');
         }
-
-        if (up.isDown && this.player.body.touching.down)
-        {
+    
+        if (up.isDown) {
             this.player.setVelocityY(-330);
         }
-
-        if (this.movingPlatform.x >= 500)
-        {
-            this.movingPlatform.setVelocityX(-50);
+    
+        if (this.player.y > 600) {
+            this.resetScene();
         }
-        else if (this.movingPlatform.x <= 300)
-        {
-            this.movingPlatform.setVelocityX(50);
+    
+        this.moveBox();
+    }
+    
+
+    handleCollision(player, platform) {
+        if (platform === this.movingBox) {
+            this.movingBox.setVelocityX(player.body.velocity.x);
         }
     }
 
-    collectStar (player, star)
-    {
-        star.disableBody(true, true);
+    moveBox() {
+        if (this.player.body.touching.down && Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
+            this.movingBox.setVelocityY(-100);
+        }
+    }
+
+    changeLevel() {
+        // Reset any state or timers if needed
+        this.scene.start('NextLevelScene');
+    }
+
+    resetScene() {
+        // Reset any state or timers if needed
+        this.scene.restart();
     }
 }
