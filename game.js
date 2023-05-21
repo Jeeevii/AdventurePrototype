@@ -15,7 +15,7 @@ class Intro extends Phaser.Scene {
 
 class Level1 extends Phaser.Scene {
     constructor() {
-        super("Level1", "Level1");
+        super("Level1");
     }
     player;
     platforms;
@@ -42,7 +42,9 @@ class Level1 extends Phaser.Scene {
         this.platforms.create(250, 385, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(450, 291, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(650, 200, 'platform').setScale(0.4).refreshBody();
-        
+        this.box = this.physics.add.sprite(700, 162, "box");
+        this.physics.add.collider(this.box, this.platforms);
+        this.box.setCollideWorldBounds(true);
         this.door = this.add.rectangle(700, 162, 45, 65, 0x00ff00); // door
         this.ground = this.add.rectangle(400, 590, 800, 15, "0xff0000"); 
         
@@ -82,7 +84,7 @@ class Level1 extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 800, 600);
         this.physics.world.setBounds(0, 0, 800, 600);
         this.cameras.main.startFollow(this.player, true);
-        this.physics.add.overlap(this.player, this.door, this.changeLevel, null, this);
+        //this.physics.add.overlap(this.player, this.box, this.changeLevel, null, this);
     }
 
     update() {
@@ -121,9 +123,9 @@ class Level1 extends Phaser.Scene {
             this.scene.restart('JumperScene');
         }
         */
-        if (this.physics.overlap(this.player, this.door)) {
-            console.log('Player and door are overlapping!');
-            this.changeLevel();
+        if (this.physics.overlap(this.player, this.box)) {
+            this.gotoScene('Level1End');
+            //this.changeLevel();
         }
         if (this.health <= 0) {
             this.scene.restart();
@@ -140,7 +142,7 @@ class Level1 extends Phaser.Scene {
 
 class Level2 extends Phaser.Scene {
     constructor() {
-        super("Level2", "Level2");
+        super("Level2");
     }
     player;
     platforms;
@@ -214,7 +216,6 @@ class Level2 extends Phaser.Scene {
         this.physics.add.collider(this.box, this.platforms, this.handleCollision, null, this);
         this.physics.add.collider(this.player, this.box2, this.pushBox, null, this);
         this.physics.add.collider(this.box2, this.platforms);
-
         this.cameras.main.setBounds(0, 0, 800, 600);
         this.physics.world.setBounds(0, 0, 800, 600);
         this.cameras.main.startFollow(this.player, true);
