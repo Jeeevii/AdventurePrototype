@@ -1,17 +1,3 @@
-class Intro extends Phaser.Scene {
-    constructor() {
-        super('intro')
-    }
-    create() {
-        this.add.text(150,270, "You got lost exploring, find your way back home!!").setFontSize(20);
-        this.add.text(300,300, "Click anywhere to continue.").setFontSize(15);
-        this.input.on('pointerdown', () => {
-            this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('Level1'));
-
-        });
-    }
-}
 
 class Level1 extends Phaser.Scene {
     constructor() {
@@ -85,6 +71,9 @@ class Level1 extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, 800, 600);
         this.cameras.main.startFollow(this.player, true);
         //this.physics.add.overlap(this.player, this.box, this.changeLevel, null, this);
+        this.physics.add.overlap(this.player, this.box, () => {
+            this.scene.start('Level1End');
+        });
     }
 
     update() {
@@ -123,10 +112,7 @@ class Level1 extends Phaser.Scene {
             this.scene.restart('JumperScene');
         }
         */
-        if (this.physics.overlap(this.player, this.box)) {
-            this.gotoScene('Level1End');
-            //this.changeLevel();
-        }
+
         if (this.health <= 0) {
             this.scene.restart();
         }
@@ -170,6 +156,7 @@ class Level2 extends Phaser.Scene {
         this.platforms.create(250, 350, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(430, 240, 'platform').setScale(0.4).refreshBody();
         this.platforms.create(650, 150, 'platform').setScale(0.4).refreshBody();
+        this.box3 = this.physics.add.sprite(700, 110, 'box');
         this.door = this.add.rectangle(700, 110, 45, 65, 0x00ff00); // door
         this.ground = this.add.rectangle(400, 590, 800, 15, "0xff0000"); 
         
@@ -219,7 +206,10 @@ class Level2 extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 800, 600);
         this.physics.world.setBounds(0, 0, 800, 600);
         this.cameras.main.startFollow(this.player, true);
-        this.physics.add.overlap(this.player, this.door, this.changeLevel, null, this);
+        this.physics.add.collider(this.box3, this.platforms);
+        this.physics.add.overlap(this.player, this.box3, () => {
+            this.scene.start('Outro');
+        });
         
         
     }
@@ -260,10 +250,6 @@ class Level2 extends Phaser.Scene {
             this.scene.restart('JumperScene');
         }
         */
-        if (this.physics.overlap(this.player, this.door)) {
-            console.log('Player and door are overlapping!');
-            this.scene.changeLevel();
-        }
         if (this.health <= 0) {
             this.scene.restart();
         }
@@ -301,12 +287,27 @@ class Level1End extends Phaser.Scene {
         });
     }
 }
-class Outro extends Phaser.Scene {
+class Intro extends Phaser.Scene {
     constructor() {
-        super('outro')
+        super('intro')
     }
     create() {
-        this.add.text(150,270, "You made it back!!!").setFontSize(20);
+        this.add.text(150,270, "You got lost exploring, find your way back home!!").setFontSize(20);
+        this.add.text(300,300, "Click anywhere to continue.").setFontSize(15);
+        this.input.on('pointerdown', () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => this.scene.start('Level1'));
+
+        });
+    }
+}
+
+class Outro extends Phaser.Scene {
+    constructor() {
+        super('Outro')
+    }
+    create() {
+        this.add.text(310 ,270, "You made it back!!!").setFontSize(20);
         this.add.text(300,300, "Click anywhere to restart").setFontSize(15);
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
