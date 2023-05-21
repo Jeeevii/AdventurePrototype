@@ -1,4 +1,22 @@
+class Intro extends Phaser.Scene {
+    constructor() {
+        super('intro')
+    }
+    create() {
+        this.add.text(150,250, "You got lost exploring, find your way back home!!").setFontSize(20);
+        this.add.text(300,300, "Click anywhere to continue.").setFontSize(15);
+        this.input.on('pointerdown', () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => this.scene.start('Level1'));
+
+        });
+    }
+}
+
 class Level1 extends Phaser.Scene {
+    constructor() {
+        super("Level1", "Level1");
+    }
     player;
     platforms;
     door;
@@ -12,6 +30,7 @@ class Level1 extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.fadeIn(800, 255, 255, 255);
         this.add.image(400, 300, 'sky');
         this.hearts = [];
         this.health = 3;
@@ -103,10 +122,10 @@ class Level1 extends Phaser.Scene {
         */
         if (this.physics.overlap(this.player, this.door)) {
             console.log('Player and door are overlapping!');
-            this.scene.restart('JumperScene');
+            this.scene.changeLevel();
         }
         if (this.health <= 0) {
-            this.scene.restart('JumperScene');
+            this.scene.restart();
         }
     }
 
@@ -114,6 +133,34 @@ class Level1 extends Phaser.Scene {
     }
 
     changeLevel() {
-        this.scene.restart('JumperScene');
+        this.scene.restart('Level1End');
+    }
+}
+class Level1End extends Phaser.Scene {
+    constructor() {
+        super('Level1End')
+    }
+    create() {
+        this.add.text(150,250, "You are 1 step closer to home, keep going!!").setFontSize(20);
+        this.add.text(300,300, "Click anywhere to continue.").setFontSize(15);
+        this.input.on('pointerdown', () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => this.scene.start('Level2'));
+
+        });
+    }
+}
+class Outro extends Phaser.Scene {
+    constructor() {
+        super('outro')
+    }
+    create() {
+        this.add.text(150,250, "You made it back!!!").setFontSize(20);
+        this.add.text(300,300, "Click anywhere to restart").setFontSize(15);
+        this.input.on('pointerdown', () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => this.scene.start('Level1'));
+
+        });
     }
 }

@@ -10,7 +10,7 @@ const config = {
             debug: false
         }
     },
-    scene: [Level1],
+    scene: [Intro, Level1, Level1End, Outro],
     title: "Adventure Game - Jeevithan M",
 };
 
