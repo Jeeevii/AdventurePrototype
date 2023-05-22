@@ -12,7 +12,7 @@ Identify 2+ Phaser code examples that will provide a code reference for what you
 Your GitHub repository must show a history of incremental commits with useful commit messages, tracing back to an empty repository at the start.
 
 Your README.md file describes:
-Where to play your game (a link to your deployed game)
+Where to play your game https://jeeevii.github.io/D3-Physics/
 
 How your design satisfies the experience requirements below
 
